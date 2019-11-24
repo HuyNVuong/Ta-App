@@ -1,41 +1,65 @@
-import React, { useState, Component } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Container, Row } from 'react-bootstrap';
 
+const LOGIN_ENDPOINT = `${process.env.SERVER_API_ENDPOINT}/api/teacher/login`
 
-function Login() {
-  const [validated, setValidated] = useState(false);
+interface LoginProps {
+  isStudent: boolean,
+}
 
-  const handleSubmit = event => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+function Login(props: LoginProps) {  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    setValidated(true);
-  };  
-  
+
+  function validateForm() {
+    return (email.length > 0 && password.length > 0) || (props.isStudent && email.length > 0);
+  }
+
+  function handleSubmit(event: Event) {
+    event.preventDefault();
+    fetch(LOGIN_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: JSON.stringify({'username': email, 'password': password})
+    })
+    .then((result) => result)
+  }
+
   return (
     <div>
       <Container>
         <Row className="justify-content-md-center">
-          <Form>
+          <Form onSubmit={handleSubmit}>
             <Form.Label>Login</Form.Label>
-            <Form.Group>
-              <Form.Control type="email" placeholder="Email"></Form.Control>
+            <Form.Group controlId="formLoginUsername">
+              <Form.Control 
+                autoFocus
+                type="email" 
+                placeholder="Email"
+                value={email}
+                onChange={email => setEmail(email.target.value)}
+              />
             </Form.Group>
-            <Form.Group>
-              <Form.Control type="password" placeholder="Password" />
+            <Form.Group controlId="formLoginPassword">
+              <Form.Control 
+                type="password" 
+                placeholder="Password" 
+                value={password}
+                onChange={password => setPassword(password.target.value)}
+              />
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" disabled={!validateForm()} type="submit">
               Login
             </Button>
+            <Form.Control.Feedback type="valid">You did it!</Form.Control.Feedback>
           </Form>
         </Row>
       </Container>
     </div>
   );
-  
 }
 
 export default Login;
