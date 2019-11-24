@@ -3,11 +3,11 @@ import { Container, Navbar } from 'react-bootstrap';
 
 function Header() {
   return (
-    <Container>
-      <Navbar expand="xl" variant="light" bg="bg-red">
-        <Navbar.Brand href="#">Navbar</Navbar.Brand>
+      <Navbar variant="dark" bg="dark">
+        <Container>
+          <Navbar.Brand href="#">HeyMyTa</Navbar.Brand>
+        </Container>
       </Navbar>
-    </Container>
   );
 }
 
